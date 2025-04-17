@@ -1,0 +1,59 @@
+I want to build a full-stack web application using React.js (with TypeScript), Express.js (Node.js), and PostgreSQL (Neon Database) with Drizzle ORM. The project will be developed using Vite as the bundler.
+
+This application should allow me to create and edit dynamic document templates (like forms), mainly in **A4 paper size**, with **0.5 cm margins on all sides**, supporting **right-to-left (RTL) writing in Arabic** while also allowing some English characters. The main font should be **Times New Roman** with options to set **bold or regular** weight and choose **font size**.
+
+---
+
+### Key Features:
+
+1. **A4 Page Editor**
+   - A document page with fixed size (A4) and margins.
+   - Support for Arabic RTL input and optional English.
+   - Font selection: Times New Roman (with bold, regular, and font-size options).
+   - Text and tables must stay aligned (no shifting while selecting text or typing).
+
+2. **Dashboard Controls**
+   - Toolbar with buttons to:
+     - Insert text blocks.
+     - Insert tables (should prompt user to enter number of rows and columns).
+     - Change font, size, and weight.
+     - Apply RTL or LTR direction per block.
+
+3. **Dynamic Tables**
+   - Insertable with customizable rows/columns.
+   - Allow resizing of cells, merging cells, inserting text inside them.
+   - Must support basic formulas: sum, subtract, divide (like a mini Excel).
+
+4. **Dropdown Menus in Tables**
+   - Ability to insert a dropdown list inside a table cell.
+   - When clicked, user is prompted to enter list values manually.
+
+5. **Document Actions**
+   - Buttons for: Save current document state, Undo, Redo.
+   - Import data from Word or Excel files and fill form fields.
+   - Export options to Word, Excel, and PDF formats.
+   - Print document directly.
+   - Ability to insert an image from the user’s computer.
+   - Add checkboxes to any block/column to exclude it from printing.
+
+6. **Location Integration**
+   - A button to insert the **location (Google Maps)** of the current case.
+   - Allow pasting a Telegram location link or coordinates and attach it to the form.
+
+---
+
+### Database Integration:
+
+- The document acts as a **data entry form** for a large database of over 1500 records.
+- There will be **a financial/accounting section** that fetches its data from this main form.
+- One main accounting document must be generated:
+  - Contains a table of **12 rows x 5 columns**.
+  - Row 1: table header.
+  - Rows 2–11: 10 entries (names from DB).
+  - Row 12: merged cells (columns 1-3 for sum; columns 4-5 for number in words).
+  - This document must **automatically paginate** depending on the total number of people (e.g. 150 pages for 1500 names).
+
+7. **Sub-Documents / Templates**
+   - At least 10 additional documents (form templates) will be created.
+   - They will reuse and pull data from the first document (as predefined models).
+   - Each will be treated as

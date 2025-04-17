@@ -1,0 +1,107 @@
+// MapControls.tsx
+import { useEffect, useState } from "react";
+
+const MapControls = () => {
+  const [selectedMap, setSelectedMap] = useState<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest(".map-wrapper")) {
+        setSelectedMap(target.closest(".map-wrapper") as HTMLDivElement);
+      } else {
+        setSelectedMap(null);
+      }
+    };
+
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+  }, []);
+
+  const deleteMap = () => {
+    if (selectedMap) {
+      selectedMap.remove();
+      setSelectedMap(null);
+    }
+  };
+
+  const setMapSize = (height: string) => {
+    if (selectedMap) {
+      const iframe = selectedMap.querySelector("iframe");
+      if (iframe) iframe.style.height = height;
+    }
+  };
+
+  return selectedMap ? (
+    <div
+      className="absolute z-50 bg-white shadow p-2 rounded border flex gap-2"
+      style={{
+        top: selectedMap.getBoundingClientRect().top + window.scrollY - 40,
+        left: selectedMap.getBoundingClientRect().left,
+      }}
+    >
+      <button onClick={() => setMapSize("200px")} className="text-sm px-2">📏 صغير</button>
+      <button onClick={() => setMapSize("300px")} className="text-sm px-2">📏 متوسط</button>
+      <button onClick={() => setMapSize("400px")} className="text-sm px-2">📏 كبير</button>
+      <button onClick={deleteMap} className="text-sm px-2 text-red-600">🗑 حذف</button>
+    </div>
+  ) : null;
+};
+
+export default MapControls;
+
+
+// utils/insertLocationMap.ts
+export const insertLocationMap = (url: string) => {
+  const selection = window.getSelection();
+  if (!selection?.rangeCount) return;
+
+  const range = selection.getRangeAt(0);
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "map-wrapper";
+  wrapper.contentEditable = "false";
+  wrapper.style.margin = "1rem 0";
+  wrapper.style.position = "relative";
+
+  const iframe = document.createElement("iframe");
+  iframe.src = convertToEmbedUrl(url);
+  iframe.width = "100%";
+  iframe.height = "300";
+  iframe.style.border = "1px solid #ccc";
+  iframe.style.borderRadius = "8px";
+  iframe.loading = "lazy";
+
+  wrapper.appendChild(iframe);
+
+  range.deleteContents();
+  range.insertNode(wrapper);
+};
+
+const convertToEmbedUrl = (url: string): string => {
+  if (url.includes("google.com/maps")) {
+    return url.replace("/maps", "/maps/embed");
+  }
+  return url;
+};
+
+
+// EditorPage.tsx (أو المكان الرئيسي)
+import MapControls from "./MapControls";
+
+export default function EditorPage() {
+  return (
+    <div className="relative">
+      <MapControls />
+      <div
+        id="editor-body"
+        contentEditable
+        suppressContentEditableWarning
+        className="relative p-8 bg-white shadow rounded min-h-[1000px] w-[21cm] mx-auto border border-gray-300"
+        dir="rtl"
+      >
+        {/* المحتوى هنا */}
+      </div>
+    </div>
+  );
+}
